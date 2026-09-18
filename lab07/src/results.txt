@@ -1,0 +1,26 @@
+Lab 7 speed test results (run on Windows 11, JDK 17, ~N random insertions).
+
+InsertRandomSpeedTest (random strings, L=5, N=100000):
+  ULLMap:       Stack Overflow -- couldn't add 100000 strings of length 5.
+  MyHashMap:    0.04 sec
+  Java HashMap: 0.02 sec
+
+InsertInOrderSpeedTest (lexicographically increasing strings, N=5000 for ULLMap, N=100000 for others):
+  ULLMap:       0.08 sec (N=5000)
+  MyHashMap:    0.07 sec
+  Java HashMap: 0.04 sec
+
+BucketsSpeedTest (random strings, L=5, N=50000):
+  MyHashMap with ArrayList buckets:   0.06 sec
+  MyHashMap with LinkedList buckets:  0.05 sec
+  MyHashMap with HashSet buckets:     0.05 sec
+  MyHashMap with Stack buckets:       0.03 sec
+  MyHashMap with ArrayDeque buckets:  0.02 sec
+
+Observations:
+- ULLMap is a linked list with O(N) insertion; its recursive get overflows
+  the call stack at 100000 random insertions and is much slower at scale.
+- MyHashMap performs close to Java's built-in HashMap for both random and
+  in-order insertions.
+- Bucket type barely matters for random insertions; with a good hash
+  function each bucket stays short. Differences are dominated by noise.

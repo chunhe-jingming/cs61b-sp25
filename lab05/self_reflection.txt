@@ -1,0 +1,63 @@
+You must answer at least 4 questions, but the remaining ones are optional. The main goal of this file is to get you thinking critically about your own work, but we will also use these self reflections at the end of the semester when we do our internal review of the course.
+
+ArrayDeque61B:
+
+Q: Give an example of at least one idea from the staff solution that would have made your solution better (if any).
+
+A: My initial version used an explicit index-mapping helper sprinkled through every method. Consolidating all the circular-index math into just two conventions (nextFirst / nextLast with floorMod) made the code much shorter and removed an entire class of off-by-one bugs. Writing out a few resizing examples on paper before coding would have saved me a couple of debugging rounds.
+
+Q: What's something you felt proud of in your code, if anything?
+
+A: The resize method relayouts the items contiguously starting at index 0, which made reasoning about the post-resize state trivial (nextFirst = capacity - 1, nextLast = size). The wrapAroundTest I wrote (remove half, keep adding) exercises exactly the case where naive index math breaks, and it caught a bug in my first attempt.
+
+Q: What's something that was particularly inelegant in your code, if anything?
+
+A: getRecursive doesn't have a natural recursive structure on an array, so my first version was a fake "tail view" helper class that wasn't really recursive. I replaced it with a helper that recurses on (startIndex + 1, index - 1), which is honest but still feels like recursion bolted onto an inherently flat structure.
+
+Q: What did you learn by talking to your partner about writing ArrayDeque61B?
+
+A: N/A - I worked on this project solo. Reading the suggested testing strategies in the spec served as my substitute for peer discussion; the emphasis on testing resizing separately from wrapping-around was the most useful takeaway.
+
+Q: What do you wish you would have known before writing ArrayDeque61B, if anything?
+
+A: That the empty-deque convention (nextLast = nextFirst + 1) means the "full" condition is size == items.length rather than an index comparison. Once I saw that, every other decision fell into place.
+
+Q: If you wrote ArrayDeque61B again, what would you do differently, if anything?
+
+A: I would write the resize test before implementing resize, and I would shrink the array when the usage factor gets very low (the staff solution notes this is optional, but it's a nice touch for memory-conscious designs).
+
+-----
+
+LinkedListDeque61B:
+
+Q: Give an example of at least one idea from the staff solution that would have made your solution better (if any).
+
+A: The circular sentinel (sentinel.prev = sentinel.next = sentinel initially) eliminates every null check in addFirst/addLast/removeFirst/removeLast. I was initially worried about the "empty case" and the sentinel design made those worries disappear.
+
+Q: What's something you felt proud of in your code, if anything?
+
+A: removeFirst and removeLast each came out to four lines with no special cases. The PreconditionTest passing on the first run (exactly one inner class, exactly two Node fields plus one generic item field, no non-trivial fields) felt like confirmation that the design was clean.
+
+Q: What's something that was particularly inelegant in your code, if anything?
+
+A: getRecursiveHelper walks the list by passing node.next, which is fine, but the bounds check lives in getRecursive while the helper assumes a valid index - the split of responsibilities is slightly awkward.
+
+Q: What did you learn by talking to your partner about writing LinkedListDeque61B?
+
+A: N/A - I worked on this project solo. The spec's PreconditionTest taught me what "generic inner class" actually means (using the outer class's T instead of declaring a new type parameter), which I had gotten wrong at first.
+
+Q: What do you wish you would have known before writing LinkedListDeque61B, if anything?
+
+A: That an inner (non-static) class can simply use the outer class's type parameter T - declaring Node<T> again is a common mistake and the precondition test exists to catch exactly that.
+
+Q: If you wrote LinkedListDeque61B again, what would you do differently, if anything?
+
+A: I would write toList() first and use it in every subsequent test, since it gives a cheap, readable snapshot of the entire deque state after every operation.
+
+-----
+
+Meta:
+
+Q: Did you like this design review process? Anything we should do differently next time?
+
+A: The structured reflection questions were useful for forcing me to articulate design decisions instead of just "getting the tests green". I'd enjoy a short checklist of common pitfalls (like the generic inner class issue) appended to the reflection for self-learners who don't have lab partners to compare with.
